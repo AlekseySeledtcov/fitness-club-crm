@@ -4,3 +4,10 @@ server:
 spring:
   application:
     name: fitness-crm
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:postgresql://localhost:5432/crm_db
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
