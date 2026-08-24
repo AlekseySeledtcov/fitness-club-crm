@@ -1,0 +1,13 @@
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - docker-volume:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: crm_db
+      POSTGRES_USER: crm_user
+      POSTGRES_PASSWORD: password
+volumes:
+  docker-volume:
