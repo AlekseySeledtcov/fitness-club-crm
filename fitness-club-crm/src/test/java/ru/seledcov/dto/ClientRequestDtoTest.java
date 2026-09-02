@@ -56,8 +56,8 @@ public class ClientRequestDtoTest {
     }
 
     @Test
-    void shouldFailValidation_WhenPhoneHasInvalidFormat(){
-        ClientRequestDto clientRequestDto = new ClientRequestDto (
+    void shouldFailValidation_WhenPhoneHasInvalidFormat() {
+        ClientRequestDto clientRequestDto = new ClientRequestDto(
                 "Ivan",
                 "Ivanov",
                 "example@mail.com",
@@ -69,8 +69,8 @@ public class ClientRequestDtoTest {
 
         assertThat(violations)
                 .anyMatch(violation ->
-                violation.getPropertyPath().toString().equals("phone")
-                && violation.getMessage().equals("Phone number must be in the format: +7 999 999 99 99"));
+                        violation.getPropertyPath().toString().equals("phone")
+                                && violation.getMessage().equals("Phone number must be in the format: +7 999 999 99 99"));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class ClientRequestDtoTest {
         assertThat(violations)
                 .anyMatch(violation ->
                         violation.getPropertyPath().toString().equals("birthDate")
-                && violation.getMessage().equals("Date of birth must be in the past"));
+                                && violation.getMessage().equals("Date of birth must be in the past"));
     }
 
 }
