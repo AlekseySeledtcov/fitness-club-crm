@@ -2,11 +2,13 @@ package ru.seledcov.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
+@NoArgsConstructor
 @Getter
 @Setter
 public class Client {

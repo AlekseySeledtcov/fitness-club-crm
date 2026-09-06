@@ -1,0 +1,10 @@
+POST http://localhost:8080/api/v1/clients
+Content-Type: application/json
+
+{
+  "firstName": "Ivan",
+  "lastName": "Ivanov",
+  "email": "example@mail.com",
+  "phone": "+7 999 999 99 99",
+  "birthDate": "2001-04-25"
+}
