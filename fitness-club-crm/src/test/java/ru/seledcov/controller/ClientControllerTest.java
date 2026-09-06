@@ -82,7 +82,7 @@ class ClientControllerTest extends PostgresTestContainer {
                                         """)
                 )
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.status").value("409"))
+                .andExpect(jsonPath("$.status").value(409))
                 .andExpect(jsonPath("$.message")
                         .value("Client with email 'example@mail.com' already exists"));
     }
