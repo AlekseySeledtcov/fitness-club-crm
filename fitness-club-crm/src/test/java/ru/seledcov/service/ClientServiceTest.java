@@ -9,11 +9,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.seledcov.dto.ClientRequestDto;
 import ru.seledcov.dto.ClientResponseDto;
 import ru.seledcov.entity.Client;
+import ru.seledcov.exception.ClientNotFoundException;
 import ru.seledcov.exception.EmailAlreadyExistsException;
 import ru.seledcov.mapper.ClientMapper;
 import ru.seledcov.repository.ClientRepository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -95,5 +97,35 @@ class ClientServiceTest {
                 .isInstanceOf(EmailAlreadyExistsException.class)
                 .hasMessage("Client with email '%s' already exists", email);
         verify(clientRepository, never()).save(any(Client.class));
+    }
+
+    @Test
+    void shouldGetClientById_WhenClientIsFound() {
+        Long clientId = 11L;
+
+        when(clientRepository.findById(clientId))
+                .thenReturn(Optional.of(client));
+        when(clientMapper.clientToDto(client))
+                .thenReturn(clientResponseDto);
+
+        ClientResponseDto result = clientService.getClientById(clientId);
+
+        assertThat(result).isEqualTo(clientResponseDto);
+        verify(clientRepository).findById(clientId);
+        verify(clientMapper).clientToDto(client);
+    }
+
+    @Test
+    void shouldThrowClientNotFoundException_WhenClientNotFound() {
+        Long clientId = 11L;
+
+        when(clientRepository.findById(clientId))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> clientService.getClientById(clientId))
+                .isInstanceOf(ClientNotFoundException.class)
+                .hasMessage("Client with id '%d' not found", clientId);
+
+        verify(clientRepository).findById(clientId);
     }
 }
