@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.seledcov.dto.ErrorResponse;
+import ru.seledcov.exception.ClientNotFoundException;
 import ru.seledcov.exception.EmailAlreadyExistsException;
 import ru.seledcov.infrastructure.DatabaseConstraint;
 
@@ -55,6 +56,20 @@ public class GlobalExceptionHandler {
         ErrorResponse response = new ErrorResponse(
                 status.value(),
                 message
+        );
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(ClientNotFoundException.class)
+    public ResponseEntity<ErrorResponse> clientNotFoundExceptionHandler(
+            ClientNotFoundException exception
+    ) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        ErrorResponse response = new ErrorResponse(
+                status.value(),
+                exception.getMessage()
         );
 
         return ResponseEntity.status(status).body(response);

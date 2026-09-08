@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.seledcov.dto.ClientRequestDto;
 import ru.seledcov.dto.ClientResponseDto;
 import ru.seledcov.entity.Client;
+import ru.seledcov.exception.ClientNotFoundException;
 import ru.seledcov.exception.EmailAlreadyExistsException;
 import ru.seledcov.mapper.ClientMapper;
 import ru.seledcov.repository.ClientRepository;
@@ -36,5 +37,13 @@ public class ClientService {
         Client savedClient = clientRepository.save(client);
 
         return clientMapper.clientToDto(savedClient);
+    }
+
+    public ClientResponseDto getClientById(Long id) {
+
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(String.format("Client with id '%d' not found", id)));
+
+        return clientMapper.clientToDto(client);
     }
 }
