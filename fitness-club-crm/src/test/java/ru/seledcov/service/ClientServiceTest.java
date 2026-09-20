@@ -128,4 +128,86 @@ class ClientServiceTest {
 
         verify(clientRepository).findById(clientId);
     }
+
+    @Test
+    void shouldThrowClientNotFoundException_WhenUpdateClientNotFound() {
+        long clientId = 11L;
+
+        when(clientRepository.findById(clientId))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> clientService.updateClient(clientId, clientRequestDto))
+                .isInstanceOf(ClientNotFoundException.class)
+                .hasMessage(String.format("Client with id '%d' not found", clientId));
+
+        verify(clientRepository).findById(clientId);
+    }
+
+    @Test
+    void shouldUpdateClient_WhenClientIsFound() {
+        ClientRequestDto updateClientRequestDto = new ClientRequestDto(
+                "Ivan",
+                "Ivanov",
+                "exampleUpdate@mail.com",
+                "+7 999 999 99 99",
+                LocalDate.of(1990, 5, 15)
+        );
+        ClientResponseDto updateClientResponseDto = new ClientResponseDto(
+                11L,
+                "Ivan",
+                "Ivanov",
+                "exampleUpdate@mail.com",
+                "+7 999 999 99 99",
+                LocalDate.of(1990, 5, 15)
+        );
+
+        long clientId = updateClientResponseDto.id();
+        String email = updateClientRequestDto.email();
+
+
+        when(clientRepository.findById(clientId)).thenReturn(Optional.of(client));
+        when(clientRepository.existsByEmailAndIdNot(email, clientId)).thenReturn(false);
+        when(clientMapper.clientToDto(client)).thenReturn(updateClientResponseDto);
+
+        ClientResponseDto result = clientService.updateClient(clientId, updateClientRequestDto);
+
+        verify(clientRepository).findById(clientId);
+        verify(clientRepository).existsByEmailAndIdNot(email, clientId);
+        verify(clientMapper).updateClientFromClientRequestDto(
+                updateClientRequestDto,
+                client
+        );
+        verify(clientMapper).clientToDto(client);
+
+        assertThat(result).isEqualTo(updateClientResponseDto);
+    }
+
+    @Test
+    void shouldThrowEmailAlreadyExistsException_whenUpdatingWithExistingEmail() {
+
+        ClientRequestDto updateClientRequestDto = new ClientRequestDto(
+                "Ivan",
+                "Ivanov",
+                "exampleUpdate@mail.com",
+                "+7 999 999 99 99",
+                LocalDate.of(1990, 5, 15)
+        );
+        long clientId = 11L;
+        String email = updateClientRequestDto.email();
+
+        when(clientRepository.findById(clientId))
+                .thenReturn(Optional.of(client));
+        when(clientRepository.existsByEmailAndIdNot(email, clientId))
+                .thenReturn(true);
+
+        assertThatThrownBy(() -> clientService.updateClient(clientId, updateClientRequestDto))
+                .isInstanceOf(EmailAlreadyExistsException.class)
+                .hasMessage(String.format("Client with email '%s' already exists", email));
+
+        verify(clientMapper, never())
+                .updateClientFromClientRequestDto(updateClientRequestDto, client);
+        verify(clientMapper, never())
+                .clientToDto(client);
+    }
+
 }
