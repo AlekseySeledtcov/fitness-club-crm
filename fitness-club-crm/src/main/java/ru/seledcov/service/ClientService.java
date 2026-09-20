@@ -2,6 +2,7 @@ package ru.seledcov.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.seledcov.dto.ClientRequestDto;
 import ru.seledcov.dto.ClientResponseDto;
 import ru.seledcov.entity.Client;
@@ -43,6 +44,21 @@ public class ClientService {
 
         Client client = clientRepository.findById(id)
                 .orElseThrow(() -> new ClientNotFoundException(String.format("Client with id '%d' not found", id)));
+
+        return clientMapper.clientToDto(client);
+    }
+
+    @Transactional
+    public ClientResponseDto updateClient(Long id, ClientRequestDto dto) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(String.format("Client with id '%d' not found", id)));
+
+        String email = dto.email();
+        if (clientRepository.existsByEmailAndIdNot(email, id)) {
+            throw new EmailAlreadyExistsException(String.format("Client with email '%s' already exists", email));
+        }
+
+        clientMapper.updateClientFromClientRequestDto(dto, client);
 
         return clientMapper.clientToDto(client);
     }

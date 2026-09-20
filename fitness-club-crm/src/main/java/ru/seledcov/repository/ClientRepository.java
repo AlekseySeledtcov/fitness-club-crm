@@ -6,4 +6,6 @@ import ru.seledcov.entity.Client;
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
     boolean existsByEmail(String email);
+
+    boolean existsByEmailAndIdNot(String email, Long id);
 }
