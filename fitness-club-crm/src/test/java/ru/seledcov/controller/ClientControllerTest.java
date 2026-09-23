@@ -17,6 +17,7 @@ import ru.seledcov.repository.ClientRepository;
 import java.time.LocalDate;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -256,6 +257,41 @@ class ClientControllerTest extends PostgresTestContainer {
                 .andExpect(jsonPath("$.message")
                         .value(String.format("Client with email '%s' already exists", client2.getEmail()))
                 );
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnNotFound_WhenDeleteClientNotExists() throws Exception {
+        long clientId = 999L;
+        mockMvc.perform(
+                        delete("/api/v1/clients/" + clientId)
+                                .with(csrf())
+                )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.message")
+                        .value(String.format("Client with id '%d' not found", clientId))
+                );
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnNoContent_WhenClientIsDeleted() throws Exception {
+        Client client = new Client();
+        client.setFirstName("Petr");
+        client.setLastName("Petrov");
+        client.setEmail("example@mail.com");
+        client.setPhone("+7 999 111 22 33");
+        client.setBirthDate(LocalDate.of(1990, 5, 15));
+
+        client = clientRepository.save(client);
+        long clientId = client.getId();
+
+        mockMvc.perform(
+                        delete("/api/v1/clients/" + clientId)
+                                .with(csrf())
+                )
+                .andExpect(status().isNoContent());
     }
 
 }

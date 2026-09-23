@@ -210,4 +210,34 @@ class ClientServiceTest {
                 .clientToDto(client);
     }
 
+    @Test
+    void shouldThrowClientNotFoundException_whenDeletedClientNotFound() {
+
+        long clientId = 999L;
+
+        when(clientRepository.findById(clientId))
+                .thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> clientService.deleteClient(clientId))
+                .isInstanceOf(ClientNotFoundException.class)
+                .hasMessage(String.format("Client with id '%d' not found", clientId));
+
+        verify(clientRepository).findById(clientId);
+        verify(clientRepository, never()).delete(any(Client.class));
+    }
+
+    @Test
+    void shouldDeleteClient_whenClientIsFound() {
+
+        long clientId = 999L;
+
+        when(clientRepository.findById(clientId))
+                .thenReturn(Optional.of(client));
+
+        clientService.deleteClient(clientId);
+
+        verify(clientRepository).findById(clientId);
+        verify(clientRepository).delete(client);
+    }
+
 }

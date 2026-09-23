@@ -62,4 +62,13 @@ public class ClientService {
 
         return clientMapper.clientToDto(client);
     }
+
+    public void deleteClient(Long id) {
+        Client deletedClient = clientRepository.findById(id)
+                .orElseThrow(() -> new ClientNotFoundException(
+                        String.format("Client with id '%d' not found", id)
+                ));
+
+        clientRepository.delete(deletedClient);
+    }
 }
