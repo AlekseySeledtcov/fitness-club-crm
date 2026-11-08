@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.seledcov.dto.ErrorResponse;
 import ru.seledcov.exception.ClientNotFoundException;
 import ru.seledcov.exception.EmailAlreadyExistsException;
+import ru.seledcov.exception.TariffNotFoundException;
 import ru.seledcov.infrastructure.DatabaseConstraint;
 
 import java.util.regex.Matcher;
@@ -72,6 +73,19 @@ public class GlobalExceptionHandler {
                 exception.getMessage()
         );
 
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(TariffNotFoundException.class)
+    public ResponseEntity<ErrorResponse> tariffNotFoundExceptionHandler(
+            TariffNotFoundException exception
+    ) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+
+        ErrorResponse response = new ErrorResponse(
+                status.value(),
+                exception.getMessage()
+        );
         return ResponseEntity.status(status).body(response);
     }
 
