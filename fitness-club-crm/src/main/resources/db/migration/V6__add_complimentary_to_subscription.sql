@@ -1,0 +1,2 @@
+ALTER TABLE subscription
+ADD COLUMN complimentary BOOLEAN NOT NULL DEFAULT FALSE;

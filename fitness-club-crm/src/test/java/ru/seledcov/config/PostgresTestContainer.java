@@ -5,16 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.seledcov.infrastructure.DatabaseCleaner;
 
-@Testcontainers
 public abstract class PostgresTestContainer {
 
-    @Container
-    protected static PostgreSQLContainer<?> postgres =
+    protected static final PostgreSQLContainer<?> postgres =
             new PostgreSQLContainer<>("postgres:18.6");
+
+    static {
+        postgres.start();
+    }
 
     @DynamicPropertySource
     private static void configureProperties(DynamicPropertyRegistry registry) {
