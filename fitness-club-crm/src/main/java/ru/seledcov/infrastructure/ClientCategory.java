@@ -1,5 +1,7 @@
 package ru.seledcov.infrastructure;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 public enum ClientCategory implements NamedEnum {
     ADULT("adult"),
     BENEFIT("benefit");
@@ -13,5 +15,10 @@ public enum ClientCategory implements NamedEnum {
     @Override
     public String getName() {
         return name;
+    }
+
+    @JsonCreator(mode = JsonCreator.Mode.DELEGATING)
+    public static ClientCategory fromName(String name) {
+        return EnumUtils.fromName(ClientCategory.class, name);
     }
 }
