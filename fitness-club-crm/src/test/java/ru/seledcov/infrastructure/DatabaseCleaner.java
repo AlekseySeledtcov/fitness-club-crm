@@ -12,5 +12,7 @@ public class DatabaseCleaner {
 
     public void cleanup() {
         jdbcTemplate.execute("TRUNCATE TABLE client");
+        jdbcTemplate.execute("TRUNCATE TABLE subscription");
+        jdbcTemplate.execute("TRUNCATE TABLE tariff");
     }
 }
