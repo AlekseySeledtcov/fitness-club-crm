@@ -1,0 +1,3 @@
+ALTER TABLE subscription
+ADD COLUMN tariff_name VARCHAR NOT NULL,
+ADD COLUMN access_time VARCHAR;

@@ -1,0 +1,12 @@
+CREATE TABLE tariff (
+id BIGSERIAL PRIMARY KEY,
+name VARCHAR NOT NULL,
+type VARCHAR NOT NULL,
+client_category VARCHAR NOT NULL,
+unlimited BOOLEAN NOT NULL,
+total_visits INTEGER,
+duration_days INTEGER NOT NULL,
+access_time VARCHAR,
+price NUMERIC(12,2) NOT NULL,
+active BOOLEAN NOT NULL
+);
