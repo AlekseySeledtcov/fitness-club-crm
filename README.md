@@ -330,6 +330,7 @@ Hibernate не управляет созданием и изменением с�
 Для запуска полного набора тестов:
 
 ```bash
+cd fitness-club-crm
 mvn clean test
 ```
 
@@ -343,7 +344,7 @@ mvn clean test
 
 Конфигурация находится в:
 
-`config/checkstyle/checkstyle.xml`
+`fitness-club-crm/config/checkstyle/checkstyle.xml`
 
 Checkstyle подключён к Maven lifecycle на фазе `validate`.
 
